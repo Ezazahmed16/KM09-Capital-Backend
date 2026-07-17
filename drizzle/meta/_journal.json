@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784151157372,
+      "tag": "0000_misty_boomerang",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784151829973,
+      "tag": "0001_replace_demo_with_member_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784152512974,
+      "tag": "0002_replace_member_schema_with_app_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784206187952,
+      "tag": "0003_cultured_blackheart",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784206538303,
+      "tag": "0004_slippery_shinko_yamashiro",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784207411093,
+      "tag": "0005_fine_chimera",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784227001215,
+      "tag": "0006_groovy_the_twelve",
+      "breakpoints": true
+    }
+  ]
+}
