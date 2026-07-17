@@ -11,20 +11,28 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 if (!process.env.FRONTEND_URL) {
-  throw new Error('FRONTEND_URL must be defined');
+  console.warn("⚠️ Warning: FRONTEND_URL is not defined in environment variables. Defaulting CORS settings.");
 }
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
-  "http://localhost:5174"
+  "http://localhost:5174",
+  "http://localhost:5175"
 ].filter(Boolean) as string[];
 
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const cleanOrigins = allowedOrigins.map(o => o.replace(/['"]/g, ""));
-    if (cleanOrigins.includes(origin)) {
+    
+    // Dynamically match allowed origins, local hostnames, or any Vercel app domain
+    if (
+      cleanOrigins.includes(origin) ||
+      cleanOrigins.includes("*") ||
+      origin.endsWith(".vercel.app") ||
+      origin.startsWith("http://localhost:")
+    ) {
       callback(null, true);
     } else {
       callback(new Error(`Not allowed by CORS: ${origin}`));
@@ -47,6 +55,12 @@ app.use('/api/allpayments', allpaymentsList)
 app.use('/api/allMembers', allMembers)
 app.use('/api/myaccount', myAccount)
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+export default app;
+
+
