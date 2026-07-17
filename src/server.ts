@@ -24,7 +24,7 @@ const allowedOrigins = [
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    const cleanOrigins = allowedOrigins.map(o => o.replace(/['"]/g, ""));
+    const cleanOrigins = allowedOrigins.map(o => o.replace(/['"]/g, "").replace(/\/$/, ""));
     
     // Dynamically match allowed origins, local hostnames, or any Vercel app domain
     if (

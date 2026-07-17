@@ -3,9 +3,31 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/schema/index.js";
 import * as schema from "../db/schema/auth.js";
 
+const sanitizeOrigin = (url: string) => {
+    return url.trim().replace(/['"]/g, "").replace(/\/$/, "");
+};
+
+const frontendUrl = process.env.FRONTEND_URL ? sanitizeOrigin(process.env.FRONTEND_URL) : "";
+
+const trustedOrigins = [
+    frontendUrl,
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://*.vercel.app"
+].filter(Boolean);
+
+if (process.env.BETTER_AUTH_TRUSTED_ORIGINS) {
+    const extra = process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+        .map(o => sanitizeOrigin(o))
+        .filter(Boolean);
+    trustedOrigins.push(...extra);
+}
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    trustedOrigins: [process.env.FRONTEND_URL].filter(Boolean) as string[],
+    baseURL: process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : `http://localhost:${process.env.PORT || 8000}/api/auth`),
+    trustedOrigins,
     database: drizzleAdapter(db, {
         provider: "pg",
         schema,
