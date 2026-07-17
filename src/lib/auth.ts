@@ -50,5 +50,14 @@ export const auth = betterAuth({
                 type: "string", required: false, default: "Pending", input: true
             },
         }
+    },
+    advanced: {
+        crossSubDomainCookies: {
+            enabled: true
+        },
+        defaultCookieAttributes: {
+            sameSite: "none",
+            secure: true
+        }
     }
 });
