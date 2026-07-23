@@ -124,7 +124,22 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ error: "Payment record not found" });
         }
 
-        res.status(200).json({ data: paymentResult[0] });
+        const paymentData: any = paymentResult[0];
+
+        // Fallback user lookup if leftJoin returned empty user object
+        if (!paymentData.user || !paymentData.user.id || !paymentData.user.name) {
+            if (paymentData.userId) {
+                const foundUsers = await db.select()
+                    .from(user)
+                    .where(eq(user.id, paymentData.userId))
+                    .limit(1);
+                if (foundUsers.length > 0) {
+                    paymentData.user = foundUsers[0];
+                }
+            }
+        }
+
+        res.status(200).json({ data: paymentData });
     } catch (err) {
         console.error("Get Payment Details Error:", err);
         res.status(500).json({ error: "Failed to fetch payment details" });

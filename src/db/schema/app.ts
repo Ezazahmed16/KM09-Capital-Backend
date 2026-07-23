@@ -129,9 +129,44 @@ export const dashboardRelations = relations(financialDashboards, ({ one }) => ({
 
 
 
+export const gallery = pgTable("gallery", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  category: text("category").notNull().default("সকল ছবি"),
+  image: text("image").notNull(),
+  imageCldPubId: text("image_cld_pub_id"),
+  date: text("date"),
+  location: text("location"),
+  description: text("description"),
+  ...timeStamp,
+});
+
+export const blogs = pgTable("blogs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  category: text("category").notNull().default("সঞ্চয় ও বিনিয়োগ"),
+  readTime: text("read_time").default("৫ মিনিট পঠিত"),
+  image: text("image").notNull(),
+  imageCldPubId: text("image_cld_pub_id"),
+  date: text("date"),
+  description: text("description"),
+  fullContent: text("full_content"),
+  keyTakeaways: jsonb("key_takeaways").default([]),
+  authorName: text("author_name"),
+  authorRole: text("author_role"),
+  authorAvatar: text("author_avatar"),
+  ...timeStamp,
+});
+
 export type Payment = typeof payments.$inferSelect;
 export type NewPayment = typeof payments.$inferInsert;
 export type SystemSettings = typeof systemSettings.$inferSelect;
 export type NewSystemSettings = typeof systemSettings.$inferInsert;
 export type FinancialDashboard = typeof financialDashboards.$inferSelect;
 export type NewFinancialDashboard = typeof financialDashboards.$inferInsert;
+export type Gallery = typeof gallery.$inferSelect;
+export type NewGallery = typeof gallery.$inferInsert;
+export type Blog = typeof blogs.$inferSelect;
+export type NewBlog = typeof blogs.$inferInsert;

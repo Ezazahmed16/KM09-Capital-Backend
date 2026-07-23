@@ -4,6 +4,9 @@ import paymentList from "./routes/payment.js";
 import allMembers from "./routes/allMembers.js";
 import myAccount from "./routes/myaccount.js";
 import allpaymentsList from "./routes/allpayments.js";
+import galleryRouter from "./routes/gallery.js";
+import blogRouter from "./routes/blog.js";
+import statsRouter from "./routes/stats.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 
@@ -54,6 +57,10 @@ app.use('/api/payments', paymentList)
 app.use('/api/allpayments', allpaymentsList)
 app.use('/api/allMembers', allMembers)
 app.use('/api/myaccount', myAccount)
+app.use('/api/gallery', galleryRouter)
+app.use('/api/blogs', blogRouter)
+app.use('/api/blog-management', blogRouter)
+app.use('/api/stats', statsRouter)
 
 if (!process.env.VERCEL) {
   app.listen(port, () => {

@@ -101,7 +101,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update Member status
+// Update Member status or role
 const updateMemberHandler = async (req: express.Request, res: express.Response) => {
     try {
         const session = await auth.api.getSession({
@@ -117,17 +117,29 @@ const updateMemberHandler = async (req: express.Request, res: express.Response) 
         }
 
         const { id } = req.params;
-        const { userStatus } = req.body;
+        const { userStatus, role } = req.body;
 
-        if (!userStatus) {
-            return res.status(400).json({ error: "Status is required" });
+        if (!userStatus && !role) {
+            return res.status(400).json({ error: "Status or role is required for update" });
+        }
+
+        const updatePayload: Record<string, any> = {
+            updatedAt: new Date()
+        };
+
+        if (userStatus) {
+            updatePayload.userStatus = userStatus;
+        }
+
+        if (role) {
+            if (session.user.role !== "SuperAdmin") {
+                return res.status(403).json({ error: "Access denied: Only SuperAdmin can modify user roles" });
+            }
+            updatePayload.role = role;
         }
 
         await db.update(user)
-            .set({
-                userStatus,
-                updatedAt: new Date()
-            })
+            .set(updatePayload)
             .where(eq(user.id as any, id as any));
 
         const updatedMemberResult = await db.select()
@@ -138,7 +150,7 @@ const updateMemberHandler = async (req: express.Request, res: express.Response) 
         res.status(200).json({ data: updatedMemberResult[0] });
     } catch (err: any) {
         console.error("Update Member Error:", err);
-        res.status(500).json({ error: err.message || "Failed to update member status" });
+        res.status(500).json({ error: err.message || "Failed to update member" });
     }
 };
 
