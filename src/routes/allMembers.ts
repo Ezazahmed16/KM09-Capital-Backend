@@ -1,6 +1,7 @@
 import express from 'express';
-import {user} from "../db/schema/auth.js";
-import {and, desc, eq, getTableColumns, ilike, or, sql} from "drizzle-orm";
+import { user } from "../db/schema/auth.js";
+import { payments } from "../db/schema/app.js";
+import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 import { db } from "../db/schema/index.js";
 import { auth } from "../lib/auth.js";
 
@@ -65,6 +66,42 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.error("Get All Members Error:", err);
         res.status(500).json({ error: "Something went wrong Get All Members Error" });
+    }
+});
+
+// GET Member Payments History by Member ID
+router.get('/:id/payments', async (req, res) => {
+    try {
+        const session = await auth.api.getSession({
+            headers: req.headers
+        });
+
+        if (!session) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const { id } = req.params;
+
+        const memberPayments = await db.select()
+            .from(payments)
+            .where(eq(payments.userId as any, id as any))
+            .orderBy(desc(payments.createdAt));
+
+        const approvedPayments = memberPayments.filter((p: any) => p.paymentStatus === 'Approved');
+        const totalPaid = approvedPayments.reduce((sum: number, p: any) => sum + (parseFloat(p.total || p.amount) || 0), 0);
+        const totalFines = memberPayments.reduce((sum: number, p: any) => sum + (parseFloat(p.extraFine) || 0), 0);
+
+        res.status(200).json({
+            data: memberPayments,
+            summary: {
+                totalPaid,
+                totalFines,
+                totalMonthsPaid: approvedPayments.length,
+            }
+        });
+    } catch (err: any) {
+        console.error("Get Member Payments Error:", err);
+        res.status(500).json({ error: err.message || "Failed to fetch member payment history" });
     }
 });
 
