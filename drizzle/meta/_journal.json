@@ -50,6 +50,13 @@
       "when": 1784227001215,
       "tag": "0006_groovy_the_twelve",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1784816305174,
+      "tag": "0007_fearless_starfox",
+      "breakpoints": true
     }
   ]
 }

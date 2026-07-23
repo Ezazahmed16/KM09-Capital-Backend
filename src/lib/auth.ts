@@ -49,6 +49,21 @@ export const auth = betterAuth({
             userStatus: {
                 type: "string", required: false, default: "Pending", input: true
             },
+            phoneNo: {
+                type: "string", required: false, input: true
+            },
+            whatsappNo: {
+                type: "string", required: false, input: true
+            },
+            location: {
+                type: "string", required: false, input: true
+            },
+            address: {
+                type: "string", required: false, input: true
+            },
+            note: {
+                type: "string", required: false, input: true
+            },
         }
     },
     advanced: {

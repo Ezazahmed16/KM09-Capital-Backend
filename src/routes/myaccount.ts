@@ -45,18 +45,35 @@ router.put('/', async (req, res) => {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const { name, image, imageCldPubId } = req.body;
+        const { name, image, imageCldPubId, phoneNo, whatsappNo, location, address, note } = req.body;
 
-        if (!name || name.trim() === "") {
-            return res.status(400).json({ error: "Name is required" });
+        const existingUserData = await db.select()
+            .from(user)
+            .where(eq(user.id, session.user.id))
+            .limit(1);
+
+        if (existingUserData.length === 0) {
+            return res.status(404).json({ error: "User not found" });
         }
+
+        const currentUser = existingUserData[0];
+        if (!currentUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const updatedName = (name && typeof name === "string" && name.trim() !== "") ? name.trim() : currentUser.name;
 
         // Update in DB
         await db.update(user)
             .set({
-                name: name.trim(),
-                image: image || null,
-                imageCldPubId: imageCldPubId || null,
+                name: updatedName,
+                image: image !== undefined ? (image ? image.trim() : null) : currentUser.image,
+                imageCldPubId: imageCldPubId !== undefined ? (imageCldPubId ? imageCldPubId.trim() : null) : currentUser.imageCldPubId,
+                phoneNo: phoneNo !== undefined ? (phoneNo ? phoneNo.trim() : null) : currentUser.phoneNo,
+                whatsappNo: whatsappNo !== undefined ? (whatsappNo ? whatsappNo.trim() : null) : currentUser.whatsappNo,
+                location: location !== undefined ? (location ? location.trim() : null) : currentUser.location,
+                address: address !== undefined ? (address ? address.trim() : null) : currentUser.address,
+                note: note !== undefined ? (note ? note.trim() : null) : currentUser.note,
                 updatedAt: new Date(),
             })
             .where(eq(user.id, session.user.id));

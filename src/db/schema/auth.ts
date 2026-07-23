@@ -22,6 +22,11 @@ export const user = pgTable("user", {
   role: roleEnum("role").notNull().default("Member"),
   imageCldPubId: text("image_cld_pub_id"),
   userStatus: userStatusEnum("user_status").notNull().default("Pending"),
+  phoneNo: text("phone_no"),
+  whatsappNo: text("whatsapp_no"),
+  location: text("location"),
+  address: text("address"),
+  note: text("note"),
 });
 
 export const session = pgTable("session", {
