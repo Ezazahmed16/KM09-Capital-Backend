@@ -9,7 +9,7 @@ const router = express.Router();
 // Get All Members with Search by Name, Filter by Status
 router.get('/', async (req, res) => {
     try {
-        const { search, status, page = 1, limit = 10 } = req.query;
+        const { search, status, page = 1, limit = 100 } = req.query;
 
         const currentPage = Math.max(1, +page);
         const limitPerPage = Math.max(1, +limit);
