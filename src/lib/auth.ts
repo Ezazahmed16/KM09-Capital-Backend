@@ -27,9 +27,25 @@ if (process.env.BETTER_AUTH_TRUSTED_ORIGINS) {
     trustedOrigins.push(...extra);
 }
 
+const rawAuthUrl = process.env.BETTER_AUTH_URL
+    ? sanitizeOrigin(process.env.BETTER_AUTH_URL)
+    : "";
+
+const getBaseUrl = () => {
+    if (rawAuthUrl) {
+        return rawAuthUrl.endsWith("/api/auth")
+            ? rawAuthUrl
+            : (rawAuthUrl.endsWith("/api") ? `${rawAuthUrl}/auth` : `${rawAuthUrl}/api/auth`);
+    }
+    if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}/api/auth`;
+    }
+    return `http://localhost:${process.env.PORT || 8000}/api/auth`;
+};
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : `http://localhost:${process.env.PORT || 8000}/api/auth`),
+    baseURL: getBaseUrl(),
     trustedOrigins,
     database: drizzleAdapter(db, {
         provider: "pg",
