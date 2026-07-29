@@ -11,6 +11,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 
 const app = express();
+app.set("trust proxy", 1);
 const port = process.env.PORT || 8000;
 
 if (!process.env.FRONTEND_URL) {

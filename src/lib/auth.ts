@@ -86,6 +86,9 @@ export const auth = betterAuth({
         }
     },
     advanced: {
+        ipAddress: {
+            ipAddressHeaders: ["x-forwarded-for"]
+        },
         crossSubDomainCookies: {
             enabled: process.env.ENABLE_CROSS_SUBDOMAIN_COOKIES === "true",
             ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
