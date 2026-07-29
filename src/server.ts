@@ -56,7 +56,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.all('/api/auth/*', toNodeHandler(auth));
+// Route all Better Auth requests (/api/auth/sign-in, /api/auth/sign-up, etc.)
 app.use('/api/auth', toNodeHandler(auth));
 
 app.use(express.json());
