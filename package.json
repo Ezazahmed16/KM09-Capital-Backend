@@ -18,6 +18,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@better-auth/infra": "^0.3.7",
     "@neondatabase/serverless": "^1.1.0",
     "better-auth": "^1.6.23",
     "cors": "^2.8.6",
