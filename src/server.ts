@@ -52,11 +52,12 @@ app.use(cors({
       callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true
 }));
 
-app.all('/api/auth/*splat', toNodeHandler(auth));
+app.all('/api/auth/*', toNodeHandler(auth));
+app.use('/api/auth', toNodeHandler(auth));
 
 app.use(express.json());
 
