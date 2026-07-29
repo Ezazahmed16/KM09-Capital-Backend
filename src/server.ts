@@ -21,19 +21,30 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
   "http://localhost:5174",
-  "http://localhost:5175"
+  "http://localhost:5175",
+  "https://km09-capital.com",
+  "https://www.km09-capital.com"
 ].filter(Boolean) as string[];
+
+if (process.env.BETTER_AUTH_TRUSTED_ORIGINS) {
+  const extra = process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+    .map(o => o.trim().replace(/['"]/g, "").replace(/\/$/, ""))
+    .filter(Boolean);
+  allowedOrigins.push(...extra);
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const cleanOrigins = allowedOrigins.map(o => o.replace(/['"]/g, "").replace(/\/$/, ""));
 
-    // Dynamically match allowed origins, local hostnames, or any Vercel app domain
+    // Dynamically match allowed origins, local hostnames, Vercel domains, or custom domain (km09-capital.com)
     if (
       cleanOrigins.includes(origin) ||
       cleanOrigins.includes("*") ||
       origin.endsWith(".vercel.app") ||
+      origin.endsWith(".km09-capital.com") ||
+      origin === "https://km09-capital.com" ||
       origin.startsWith("http://localhost:")
     ) {
       callback(null, true);

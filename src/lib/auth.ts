@@ -14,7 +14,10 @@ const trustedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
-    "https://*.vercel.app"
+    "https://*.vercel.app",
+    "https://km09-capital.com",
+    "https://www.km09-capital.com",
+    "https://*.km09-capital.com"
 ].filter(Boolean);
 
 if (process.env.BETTER_AUTH_TRUSTED_ORIGINS) {
@@ -68,7 +71,8 @@ export const auth = betterAuth({
     },
     advanced: {
         crossSubDomainCookies: {
-            enabled: true
+            enabled: process.env.ENABLE_CROSS_SUBDOMAIN_COOKIES === "true",
+            ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
         },
         defaultCookieAttributes: {
             sameSite: "none",
