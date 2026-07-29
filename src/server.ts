@@ -36,23 +36,22 @@ if (process.env.BETTER_AUTH_TRUSTED_ORIGINS) {
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, "https://km09-capital.com");
+    const cleanOrigin = origin.trim().replace(/\/$/, "");
     const cleanOrigins = allowedOrigins.map(o => o.replace(/['"]/g, "").replace(/\/$/, ""));
 
     if (
-      cleanOrigins.includes(origin) ||
-      cleanOrigins.includes("*") ||
-      origin.endsWith(".vercel.app") ||
-      origin.endsWith(".km09-capital.com") ||
-      origin === "https://km09-capital.com" ||
-      origin === "https://www.km09-capital.com" ||
-      origin.startsWith("http://localhost:")
+      cleanOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith(".vercel.app") ||
+      cleanOrigin.endsWith(".km09-capital.com") ||
+      cleanOrigin === "https://km09-capital.com" ||
+      cleanOrigin === "https://www.km09-capital.com" ||
+      cleanOrigin.startsWith("http://localhost:")
     ) {
-      return callback(null, true);
+      return callback(null, cleanOrigin);
     }
 
-    // Fallback safely for production deployment without throwing 500 error
-    return callback(null, true);
+    return callback(null, cleanOrigin);
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin", "Cookie"],
