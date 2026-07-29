@@ -49,7 +49,9 @@ export const auth = betterAuth({
     baseURL: getBaseUrl(),
     trustedOrigins,
     plugins: [
-        dash()
+        dash({
+            ...(process.env.BETTER_AUTH_API_KEY ? { apiKey: process.env.BETTER_AUTH_API_KEY } : (process.env.BETTER_AUTH_SECRET ? { apiKey: process.env.BETTER_AUTH_SECRET } : {}))
+        })
     ],
     database: drizzleAdapter(db, {
         provider: "pg",
